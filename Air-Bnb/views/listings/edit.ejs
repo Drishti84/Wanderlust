@@ -1,50 +1,52 @@
 <% layout("/layouts/boilerplate") %>
-<body>
-    <div class="row mt-3">
-        <div class="col-8 offset-2">
 
-       
-    <h3>edit your listing</h3>
+<div class="form-page">
+  <div class="form-card">
+    <h2 class="form-card-title">Edit Listing</h2>
+    <p class="form-card-subtitle">Update your listing details below.</p>
+
     <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="title" class="form-label">title</label>
-            <input name="listing[title]" value="<%= listing.title %>" type="text" class="form-control" required>
-        </div>
-        
-        <div class="mb-3">
-            <label for="description" class="form-label" >description</label>
-            <textarea  name="listing[description]" placeholder="<%= listing.description %>" class="form-control" required></textarea >
-        </div>
-        
-        <div class="mb-3 ">
-            <img class="edit-photo" src="<%= listing.image.url %>">
-        </div>
-        
-        <div class="mb-3">
-            <label for="image" class="form-label">upload image</label> 
-            <input name="listing[image]" type="file" class="form-control" >
-        </div>
-        <div class="row">
-        <div class="mb-3 col-md-4">
-            <label for="price" class="form-label">price</label> 
-            <input name="listing[price]"  value="<%= listing.price %>" type="number" class="form-control" required>
-        </div>
-        <div class="mb-3  col-md-8">
-            <label for="location" class="form-label">location</label> 
-            <input name="listing[location]"  value="<%= listing.location %>" type="text" class="form-control" required>
-        </div>
-    </div>
 
-       <div class="mb-3">
-        <label for="country" class="form-label">country</label> 
-        <input name="listing[country]"  value="<%= listing.title %>" type="text" class="form-control" required>
-       </div>
-       
-        
-       
-        <br>
-        <button class="btn btn-dark edit-btn mb-3">submit</button>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input name="listing[title]" id="title" type="text" class="form-control" value="<%= listing.title %>" required>
+        <div class="invalid-feedback">Please enter a title.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea name="listing[description]" id="description" class="form-control" required><%= listing.description %></textarea>
+        <div class="invalid-feedback">Please add a description.</div>
+      </div>
+
+      <div class="mb-3">
+        <p class="current-image-label">Current Image</p>
+        <img src="<%= listing.image.url %>" class="current-image-thumb" alt="Current listing image">
+        <label for="image" class="form-label">Upload New Image (optional)</label>
+        <input name="listing[image]" id="image" type="file" class="form-control" accept="image/png,image/jpg,image/jpeg">
+        <img id="imagePreview" class="image-preview-thumb" src="#" alt="Preview">
+      </div>
+
+      <div class="mb-3">
+        <label for="price" class="form-label">Price per Night (₹)</label>
+        <input name="listing[price]" id="price" type="number" class="form-control" value="<%= listing.price %>" min="0" required>
+        <div class="invalid-feedback">Please enter a valid price.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <input name="listing[location]" id="location" type="text" class="form-control" value="<%= listing.location %>" required>
+        <div class="invalid-feedback">Please enter a location.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="country" class="form-label">Country</label>
+        <input name="listing[country]" id="country" type="text" class="form-control" value="<%= listing.country %>" required>
+        <div class="invalid-feedback">Please enter a country.</div>
+      </div>
+
+      <br>
+      <button type="submit" class="btn-gold w-full">Save Changes</button>
     </form>
+  </div>
 </div>
-</div>
-</body>
