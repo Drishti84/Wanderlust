@@ -1,47 +1,69 @@
-<style>
-  .search {
-    margin-left: 30rem;
-    margin-right: 20rem;
-  }
-</style>
+<nav class="wl-navbar">
+  <div class="wl-navbar-inner">
 
+    <!-- Brand -->
+    <a class="wl-brand" href="/listings">
+      <i class="fa-solid fa-compass"></i>
+      Wanderlust
+    </a>
 
-
-
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/listings"><i class="fa-solid fa-compass"></i></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-
-          <a class="nav-link" href="/listings">Explore</a>
-
-         
-        </div>
-
-        <div class="navbar-nav search">
-          
-            <form class="d-flex " role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-          
-          </div>
-
-        <div class="collapse navbar-collapse  new" id="navbarNavAltMarkup">
-          <a class="nav-link  " href="/listings/new">Airbnb Your Home</a>
-          <% if(!currUser) { %>
-          <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="/signup"><b>Signup</b></a>
-            <a class="nav-link" href="/login"><b>Login</b></a>
-            <% } %>
-            <% if(currUser) { %>
-            <a class="nav-link ms-auto" href="/logout"><b>Logout</b></a>
-            <% } %>
-          </div>
-      </div>
+    <!-- Search (hidden on mobile) -->
+    <div class="wl-search d-none d-md-block">
+      <form action="/listings" method="GET">
+        <input class="form-control" type="search" name="q" placeholder="Search destinations...">
+      </form>
     </div>
-  </nav>
+
+    <!-- Right-side actions -->
+    <div class="wl-nav-actions">
+      <a href="/listings/new" class="btn-ghost d-none d-md-inline-flex">
+        <i class="fa-solid fa-plus"></i> Add Listing
+      </a>
+
+      <% if(!currUser) { %>
+        <a href="/login" class="nav-link-wl d-none d-md-inline">Login</a>
+        <a href="/signup" class="btn-gold">Sign Up</a>
+      <% } else { %>
+        <div class="dropdown">
+          <button class="avatar-circle dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= currUser.username.charAt(0).toUpperCase() %>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li>
+              <span class="dropdown-item-text text-muted-wl" style="font-size:0.75rem; padding:0.5rem 1rem; display:block;">
+                @<%= currUser.username %>
+              </span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/listings/new"><i class="fa-solid fa-plus me-2"></i>Add Listing</a></li>
+            <li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      <% } %>
+
+      <!-- Mobile toggler -->
+      <button class="mobile-toggler d-md-none" onclick="toggleMobileNav()" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile dropdown panel -->
+  <div class="mobile-nav-panel d-md-none" id="mobileNavPanel" style="display:none !important;">
+    <form action="/listings" method="GET" class="mb-3">
+      <input class="form-control" type="search" name="q" placeholder="Search destinations...">
+    </form>
+    <a href="/listings/new" class="nav-link-wl d-block py-2 border-bottom" style="border-color: var(--border) !important;">
+      <i class="fa-solid fa-plus me-2"></i>Add Listing
+    </a>
+    <% if(!currUser) { %>
+      <a href="/login" class="nav-link-wl d-block py-2">Login</a>
+      <a href="/signup" class="nav-link-wl d-block py-2">Sign Up</a>
+    <% } else { %>
+      <a href="/logout" class="nav-link-wl d-block py-2">
+        <i class="fa-solid fa-right-from-bracket me-2"></i>Logout (@<%= currUser.username %>)
+      </a>
+    <% } %>
+  </div>
+</nav>
