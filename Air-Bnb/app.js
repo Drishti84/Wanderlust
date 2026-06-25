@@ -96,7 +96,7 @@ app.use("/", userRouter);
 app.all("*", (req, res, next) => next(new ExpressError(404, "page not found")));
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "something went wrong" } = err;
-  res.status(statusCode).render("listings/error.ejs", { message });
+  res.status(statusCode).render("listings/error.ejs", { message, statusCode });
 });
 
 

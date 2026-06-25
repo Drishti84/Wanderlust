@@ -20,7 +20,7 @@ module.exports.showListing = async (req,res) =>{
     .populate("owner");
     if(!listing){
         req.flash("error", "listing does not exist!");
-        res.redirect("/listings");
+        return res.redirect("/listings");
     }
     res.render("listings/show.ejs",{listing});
 };
@@ -44,7 +44,7 @@ module.exports.renderEditForm = async (req,res) => {
     const listing = await Listing.findById(id);
     if(!listing){
         req.flash("error", "listing does not exist!");
-        res.redirect("/listings");
+        return res.redirect("/listings");
     }
     res.render("listings/edit.ejs", {listing});
 }
