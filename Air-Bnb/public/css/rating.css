@@ -195,3 +195,10 @@
     -webkit-transition: background-position .7s;
     transition: background-position .7s;
   }
+
+/* Dark theme overrides for starability */
+.starability-slot > label,
+.starability-result::before,
+.starability-slot > label::before {
+  color: var(--accent-gold, #D4AF37) !important;
+}
