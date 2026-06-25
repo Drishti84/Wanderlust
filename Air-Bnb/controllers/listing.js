@@ -22,7 +22,6 @@ module.exports.showListing = async (req,res) =>{
         req.flash("error", "listing does not exist!");
         res.redirect("/listings");
     }
-    console.log(listing);
     res.render("listings/show.ejs",{listing});
 };
 
@@ -69,7 +68,6 @@ module.exports.updateListing = async (req,res) => {
 module.exports.destroyListing = async (req,res) => {
     let {id} = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
-    console.log(deletedListing);
     req.flash("success", " listing deleted!");
     res.redirect("/listings");
 };

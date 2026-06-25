@@ -4,7 +4,6 @@ const {listingSchema, reviewSchema} = require("./schema.js");
 const Review = require("./models/review.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
-    console.log(req.user);
     req.session.redirectUrl = req.originalUrl;
     if(!req.isAuthenticated()) {
         req.flash("error", "u must be logged in");
@@ -47,6 +46,7 @@ module.exports.validateReview = (req, res, next) => {
     let {error} = reviewSchema.validate(req.body);
     if(error) {
         let errMsg = error.details.map((el) => el.message).join(",");
+        throw new expressError(400, errMsg);
     } else {
         next();
     }
