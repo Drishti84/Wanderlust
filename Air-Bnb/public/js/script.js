@@ -36,6 +36,17 @@
     });
   }, 4000);
 
+  // Tax toggle
+  const taxSwitch = document.getElementById('taxSwitch');
+  if (taxSwitch) {
+    taxSwitch.addEventListener('change', () => {
+      const taxInfoItems = document.querySelectorAll('.tax-info');
+      taxInfoItems.forEach(el => {
+        el.style.display = el.style.display === 'inline' ? 'none' : 'inline';
+      });
+    });
+  }
+
 })();
 
 // Delete confirmation dialog (called inline via onsubmit)
