@@ -1,30 +1,40 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="row">
-    <h1 class="col-6 offset-3">login</h1>
-    <div class="col-6 offset-3">
-        <form action="/login" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" class="form-label" >Username</label>
-            <input name="username"  type="text" class="form-control" required id="username">
-            
-            </div>
-
-            
-               
-             
-
-
-             
-                       
-                            <div class="mb-3">
-                                <label for="password" class="form-label" >password</label>
-                            <input name="password"  type="password" class="form-control" required id="password">
-                        
-            </div> 
-                            
-            <button class="btn btn-success">login</button>
-        </form>
-    
+<div class="auth-layout">
+  <!-- Left: travel image -->
+  <div class="auth-image">
+    <div class="auth-image-overlay"></div>
+    <div class="auth-image-text">
+      <h2>Your next stay awaits.</h2>
+      <p>Thousands of unique places. One platform.</p>
     </div>
+  </div>
+
+  <!-- Right: form -->
+  <div class="auth-panel">
+    <div class="auth-form-inner">
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your Wanderlust account.</p>
+
+      <form action="/login" method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input name="username" id="username" type="text" class="form-control" required placeholder="Your username">
+          <div class="invalid-feedback">Please enter your username.</div>
+        </div>
+
+        <div class="mb-4">
+          <label for="password" class="form-label">Password</label>
+          <input name="password" id="password" type="password" class="form-control" required placeholder="Your password">
+          <div class="invalid-feedback">Please enter your password.</div>
+        </div>
+
+        <button type="submit" class="btn-gold w-full">Login</button>
+      </form>
+
+      <div class="auth-switch">
+        Don't have an account? <a href="/signup">Sign up</a>
+      </div>
+    </div>
+  </div>
 </div>
