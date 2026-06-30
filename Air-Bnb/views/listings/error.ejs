@@ -1,10 +1,10 @@
 <% layout("/layouts/boilerplate") %>
 
 <div class="error-page">
-  <div class="error-code"><%= statusCode %></div>
-  <h2 class="error-heading"><%= statusCode === 404 ? "Page not found" : "Something went wrong" %></h2>
-  <p class="error-body"><%= message || "The page you're looking for doesn't exist or has been moved." %></p>
-  <a href="/listings" class="btn-gold">
-    <i class="fa-solid fa-house me-2"></i>Back to Home
-  </a>
+  <div class="error-inner">
+    <div class="error-code"><%= statusCode %></div>
+    <h2 class="error-heading"><%= statusCode === 404 ? "Page not found" : "Something went wrong" %></h2>
+    <p class="error-body"><%= message || "We couldn't find what you were looking for." %></p>
+    <a href="/listings" class="btn-coral">Go back home</a>
+  </div>
 </div>
