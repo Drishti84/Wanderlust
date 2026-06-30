@@ -202,3 +202,12 @@
 .starability-slot > label::before {
   color: var(--accent-gold, #D4AF37) !important;
 }
+
+/* Warm modern theme overrides */
+.starability-result:before {
+  color: var(--coral);
+}
+.starability-slot label:before,
+.starability-slot label:after {
+  color: var(--coral);
+}
