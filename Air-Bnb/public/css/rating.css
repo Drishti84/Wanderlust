@@ -205,9 +205,9 @@
 
 /* Warm modern theme overrides */
 .starability-result:before {
-  color: var(--coral);
+  color: var(--coral) !important;
 }
 .starability-slot label:before,
 .starability-slot label:after {
-  color: var(--coral);
+  color: var(--coral) !important;
 }
