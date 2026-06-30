@@ -1,17 +1,20 @@
 <% layout("/layouts/boilerplate") %>
 
-<div class="show-layout">
+<div class="show-container">
+  <div class="show-layout">
 
-  <!-- LEFT: Listing details -->
-  <div class="show-left">
-    <img src="<%= listing.image.url %>" class="show-hero" alt="<%= listing.title %>">
+    <!-- LEFT: Listing details -->
+    <div class="show-left">
+      <img src="<%= listing.image.url %>" class="show-hero" alt="<%= listing.title %>">
 
-    <h1 class="show-title"><%= listing.title %></h1>
-    <p class="show-owner">
-      Hosted by <span class="owner-name">@<%= listing.owner.username %></span>
-    </p>
+      <h1 class="show-title"><%= listing.title %></h1>
+      <div class="show-owner">
+        <div class="owner-avatar"><%= listing.owner.username.charAt(0).toUpperCase() %></div>
+        <span>Hosted by <span class="owner-name">@<%= listing.owner.username %></span></span>
+      </div>
 
-    <p class="show-description"><%= listing.description %></p>
+      <hr class="show-divider">
+      <p class="show-description"><%= listing.description %></p>
 
     <div class="show-meta">
       <div class="show-meta-item">
@@ -85,11 +88,11 @@
             <div class="invalid-feedback">Please write a comment before submitting.</div>
           </div>
 
-          <button type="submit" class="btn-gold w-full">Submit Review</button>
+          <button type="submit" class="btn-coral w-full">Submit Review</button>
         </form>
       <% } else { %>
         <p style="color: var(--text-secondary); font-size: 0.88rem; text-align: center;">
-          <a href="/login" style="color: var(--accent-gold);">Log in</a> to leave a review.
+          <a href="/login" style="color: var(--coral);">Log in</a> to leave a review.
         </p>
       <% } %>
     </div>
@@ -97,11 +100,11 @@
 
 </div>
 
-<!-- Reviews Section (full width below the grid) -->
+<!-- Reviews Section (full width below grid) -->
 <div class="reviews-section">
   <% if(listing.reviews.length > 0) { %>
     <h3 class="reviews-heading">
-      <i class="fa-solid fa-star me-2" style="color: var(--accent-gold);"></i>
+      <i class="fa-solid fa-star me-2" style="color: var(--coral);"></i>
       <%= listing.reviews.length %> Review<%= listing.reviews.length !== 1 ? 's' : '' %>
     </h3>
 
@@ -125,8 +128,9 @@
       </div>
     <% } %>
   <% } else { %>
-    <div class="reviews-heading" style="border-top: 1px solid var(--border); padding-top: 1.5rem;">
-      <p style="color: var(--text-secondary); font-size: 0.9rem;">No reviews yet. Be the first!</p>
+    <div class="reviews-heading">
+      <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 400; padding-top: 1rem;">No reviews yet. Be the first!</p>
     </div>
   <% } %>
+</div>
 </div>
