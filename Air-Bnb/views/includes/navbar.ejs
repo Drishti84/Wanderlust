@@ -10,7 +10,10 @@
     <!-- Search (hidden on mobile) -->
     <div class="wl-search d-none d-md-block">
       <form action="/listings" method="GET">
-        <input class="form-control" type="search" name="q" placeholder="Search destinations...">
+        <div class="wl-search-bar">
+          <input type="search" name="q" placeholder="Search destinations..." aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
       </form>
     </div>
 
@@ -22,7 +25,7 @@
 
       <% if(!currUser) { %>
         <a href="/login" class="nav-link-wl d-none d-md-inline">Login</a>
-        <a href="/signup" class="btn-gold">Sign Up</a>
+        <a href="/signup" class="btn-coral">Sign Up</a>
       <% } else { %>
         <div class="dropdown">
           <button class="avatar-circle dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -30,7 +33,7 @@
           </button>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <span class="dropdown-item-text text-muted-wl" style="font-size:0.75rem; padding:0.5rem 1rem; display:block;">
+              <span class="dropdown-item-text" style="font-size:0.8rem; padding:0.5rem 1rem; display:block; color:var(--text-secondary);">
                 @<%= currUser.username %>
               </span>
             </li>
@@ -50,20 +53,18 @@
   </div>
 
   <!-- Mobile dropdown panel -->
-  <div class="mobile-nav-panel d-md-none" id="mobileNavPanel" style="display:none !important;">
+  <div id="mobileNavPanel" style="display:none;">
     <form action="/listings" method="GET" class="mb-3">
       <input class="form-control" type="search" name="q" placeholder="Search destinations...">
     </form>
-    <a href="/listings/new" class="nav-link-wl d-block py-2 border-bottom" style="border-color: var(--border) !important;">
-      <i class="fa-solid fa-plus me-2"></i>Add Listing
-    </a>
-    <% if(!currUser) { %>
-      <a href="/login" class="nav-link-wl d-block py-2">Login</a>
-      <a href="/signup" class="nav-link-wl d-block py-2">Sign Up</a>
-    <% } else { %>
-      <a href="/logout" class="nav-link-wl d-block py-2">
-        <i class="fa-solid fa-right-from-bracket me-2"></i>Logout (@<%= currUser.username %>)
-      </a>
-    <% } %>
+    <div class="mobile-nav-links">
+      <a href="/listings/new"><i class="fa-solid fa-plus me-2"></i>Add Listing</a>
+      <% if(!currUser) { %>
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
+      <% } else { %>
+        <a href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout (@<%= currUser.username %>)</a>
+      <% } %>
+    </div>
   </div>
 </nav>
