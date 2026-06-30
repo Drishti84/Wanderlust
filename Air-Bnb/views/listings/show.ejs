@@ -16,34 +16,34 @@
       <hr class="show-divider">
       <p class="show-description"><%= listing.description %></p>
 
-    <div class="show-meta">
-      <div class="show-meta-item">
-        <i class="fa-solid fa-location-dot"></i>
-        <%= listing.location %>
+      <div class="show-meta">
+        <div class="show-meta-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <%= listing.location %>
+        </div>
+        <div class="show-meta-item">
+          <i class="fa-solid fa-earth-americas"></i>
+          <%= listing.country %>
+        </div>
       </div>
-      <div class="show-meta-item">
-        <i class="fa-solid fa-earth-americas"></i>
-        <%= listing.country %>
-      </div>
-    </div>
 
-    <div class="show-price">
-      &#8377;<%= listing.price.toLocaleString('en-IN') %>
-      <small>/ night</small>
-    </div>
-
-    <% if(currUser && currUser._id.equals(listing.owner._id)) { %>
-      <div class="show-actions">
-        <a href="/listings/<%= listing._id %>/edit" class="btn-ghost">
-          <i class="fa-solid fa-pen-to-square"></i> Edit
-        </a>
-        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirmDelete()">
-          <button type="submit" class="btn-danger-ghost">
-            <i class="fa-solid fa-trash"></i> Delete
-          </button>
-        </form>
+      <div class="show-price">
+        &#8377;<%= listing.price.toLocaleString('en-IN') %>
+        <small>/ night</small>
       </div>
-    <% } %>
+
+      <% if(currUser && currUser._id.equals(listing.owner._id)) { %>
+        <div class="show-actions">
+          <a href="/listings/<%= listing._id %>/edit" class="btn-ghost">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </a>
+          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" onsubmit="return confirmDelete()">
+            <button type="submit" class="btn-danger-ghost">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+          </form>
+        </div>
+      <% } %>
   </div>
 
   <!-- RIGHT: Booking card + Review form -->
