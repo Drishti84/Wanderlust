@@ -154,33 +154,32 @@
 
 <script>
 (function() {
-  var loc     = <%- JSON.stringify(listing.location) %>;
-  var country = <%- JSON.stringify(listing.country) %>;
-  var query   = encodeURIComponent(loc + ', ' + country);
+  <% if (listing.coordinates && listing.coordinates.lat) { %>
+  var lat  = <%= listing.coordinates.lat %>;
+  var lon  = <%= listing.coordinates.lng %>;
+  var loc  = <%- JSON.stringify(listing.location) %>;
+  var ctry = <%- JSON.stringify(listing.country) %>;
 
-  fetch('https://nominatim.openstreetmap.org/search?q=' + query + '&format=json&limit=1')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      var lat = data.length ? parseFloat(data[0].lat) : 20.5937;
-      var lon = data.length ? parseFloat(data[0].lon) : 78.9629;
-      var map = L.map('listing-map').setView([lat, lon], 11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map);
-      var icon = L.divIcon({
-        html: '<div class="map-marker"><i class="fa-solid fa-location-dot"></i></div>',
-        className: '',
-        iconSize: [36, 36],
-        iconAnchor: [18, 36]
-      });
-      L.marker([lat, lon], { icon: icon })
-        .addTo(map)
-        .bindPopup('<strong>' + loc + '</strong><br>' + country)
-        .openPopup();
-    })
-    .catch(function() {
-      document.getElementById('listing-map').innerHTML =
-        '<p style="padding:20px;color:var(--text-secondary);text-align:center;">Map unavailable</p>';
-    });
+  var map = L.map('listing-map').setView([lat, lon], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 18
+  }).addTo(map);
+
+  var icon = L.divIcon({
+    html: '<div class="map-marker"><i class="fa-solid fa-location-dot"></i></div>',
+    className: '',
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36]
+  });
+  L.marker([lat, lon], { icon: icon })
+    .addTo(map)
+    .bindPopup('<strong>' + loc + '</strong><br>' + ctry)
+    .openPopup();
+  <% } else { %>
+  document.getElementById('listing-map').innerHTML =
+    '<p style="padding:40px;color:var(--text-secondary);text-align:center;font-size:0.9rem;">Map not available for this listing.</p>';
+  <% } %>
 })();
 </script>

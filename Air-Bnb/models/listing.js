@@ -29,6 +29,10 @@ const listingSchema = new Schema({
         type : String,
         enum : ["trending","rooms","cities","mountains","castles","pools","camping","farms","arctic","domes","boating"],
         default : "trending"
+    },
+    coordinates : {
+        lat : { type : Number },
+        lng : { type : Number }
     }
 });
 
