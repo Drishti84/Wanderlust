@@ -578,25 +578,18 @@ img { display: block; max-width: 100%; }
   font-size: 0.9rem;
   margin-bottom: 16px;
 }
-#listing-map {
+.listing-map-iframe {
   width: 100%;
   height: 340px;
   border-radius: var(--radius-card);
   border: 1px solid var(--border);
-  overflow: hidden;
-  z-index: 0;
+  display: block;
 }
 .show-map-directions {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   margin-top: 14px;
-}
-.map-marker {
-  color: var(--coral);
-  font-size: 2rem;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
-  line-height: 1;
 }
 
 .reviews-section {

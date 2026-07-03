@@ -106,7 +106,21 @@
     <i class="fa-solid fa-map-location-dot me-2"></i>Where you'll be
   </h3>
   <p class="show-map-location"><%= listing.location %>, <%= listing.country %></p>
-  <div id="listing-map"></div>
+  <% if (listing.coordinates && listing.coordinates.lat) { %>
+  <%
+    var _lat  = listing.coordinates.lat;
+    var _lng  = listing.coordinates.lng;
+    var _d    = 0.15;
+    var _bbox = (_lng - _d) + ',' + (_lat - _d) + ',' + (_lng + _d) + ',' + (_lat + _d);
+  %>
+  <iframe
+    class="listing-map-iframe"
+    src="https://www.openstreetmap.org/export/embed.html?bbox=<%= _bbox %>&layer=mapnik&marker=<%= _lat %>,<%= _lng %>"
+    allowfullscreen
+    loading="lazy"
+    title="Map of <%= listing.location %>"
+  ></iframe>
+  <% } %>
   <a
     href="https://www.google.com/maps/search/?api=1&query=<%= encodeURIComponent(listing.location + ', ' + listing.country) %>"
     target="_blank"
@@ -152,34 +166,3 @@
 </div>
 </div>
 
-<script>
-(function() {
-  <% if (listing.coordinates && listing.coordinates.lat) { %>
-  var lat  = <%= listing.coordinates.lat %>;
-  var lon  = <%= listing.coordinates.lng %>;
-  var loc  = <%- JSON.stringify(listing.location) %>;
-  var ctry = <%- JSON.stringify(listing.country) %>;
-
-  var map = L.map('listing-map').setView([lat, lon], 11);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 18
-  }).addTo(map);
-
-  var icon = L.divIcon({
-    html: '<div class="map-marker"><i class="fa-solid fa-location-dot"></i></div>',
-    className: '',
-    iconSize: [36, 36],
-    iconAnchor: [18, 36],
-    popupAnchor: [0, -36]
-  });
-  L.marker([lat, lon], { icon: icon })
-    .addTo(map)
-    .bindPopup('<strong>' + loc + '</strong><br>' + ctry)
-    .openPopup();
-  <% } else { %>
-  document.getElementById('listing-map').innerHTML =
-    '<p style="padding:40px;color:var(--text-secondary);text-align:center;font-size:0.9rem;">Map not available for this listing.</p>';
-  <% } %>
-})();
-</script>
