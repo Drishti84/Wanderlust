@@ -2,6 +2,7 @@ require("dotenv").config({ path: require("path").join(__dirname, "../.env") });
 const mongoose = require("mongoose");
 const Listing  = require("../models/listing.js");
 const Review   = require("../models/review.js");
+const Booking  = require("../models/booking.js");
 const User     = require("../models/user.js");
 
 const listings = [
@@ -13,7 +14,7 @@ const listings = [
   { title: "Modern Flat in Mumbai", description: "Sleek apartment in Bandra West with sea views. Close to the best cafes, galleries, and nightlife. Features a private balcony overlooking the Arabian Sea.", image: { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80", filename: "listing" }, price: 4500, location: "Mumbai", country: "India", category: "cities", coordinates: { lat: 19.0760, lng: 72.8777 } },
   { title: "Pine Chalet in Manali", description: "Cozy log cabin surrounded by snow-capped Himalayan peaks. Perfect for trekking, skiing, and stargazing. Includes a wood-burning fireplace and outdoor hot tub.", image: { url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80", filename: "listing" }, price: 3500, location: "Manali", country: "India", category: "mountains", coordinates: { lat: 32.2432, lng: 77.1892 } },
   { title: "Alpine Lodge in Swiss Alps", description: "Traditional Swiss chalet with fireside comfort and panoramic mountain views. Direct access to world-class ski slopes and summer hiking trails.", image: { url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80", filename: "listing" }, price: 18000, location: "Zermatt", country: "Switzerland", category: "mountains", coordinates: { lat: 46.0207, lng: 7.7491 } },
-  { title: "Medieval Castle in Scotland", description: "Live like royalty in a fully restored 14th-century castle. Sweeping Highland views, a private loch, and a grand dining hall seating 30.", image: { url: "https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80", filename: "listing" }, price: 35000, location: "Inverness", country: "Scotland", category: "castles", coordinates: { lat: 57.4778, lng: -4.2247 } },
+  { title: "Medieval Castle in Scotland", description: "Live like royalty in a fully restored 14th-century castle. Sweeping Highland views, a private loch, and a grand dining hall seating 30.", image: { url: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80", filename: "listing" }, price: 35000, location: "Inverness", country: "Scotland", category: "castles", coordinates: { lat: 57.4778, lng: -4.2247 } },
   { title: "Château in Loire Valley", description: "Magnificent 16th-century château surrounded by vineyards and formal gardens. Wine tastings, horse riding, and farm-to-table dinners all included.", image: { url: "https://images.unsplash.com/photo-1549877452-9c387954fbc2?w=800&q=80", filename: "listing" }, price: 28000, location: "Loire Valley", country: "France", category: "castles", coordinates: { lat: 47.6588, lng: 0.3264 } },
   { title: "Bali Jungle Pool Villa", description: "Private infinity pool overlooking lush rice terraces and jungle canopy. Includes daily breakfast and a personal villa attendant. A true tropical paradise.", image: { url: "https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=800&q=80", filename: "listing" }, price: 12000, location: "Ubud", country: "Indonesia", category: "pools", coordinates: { lat: -8.5069, lng: 115.2625 } },
   { title: "Desert Pool Retreat in Rajasthan", description: "Luxurious tented camp with a shimmering pool amid the Thar Desert dunes. Camel safaris, cultural performances, and starlit dinners included.", image: { url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80", filename: "listing" }, price: 9000, location: "Jaisalmer", country: "India", category: "pools", coordinates: { lat: 26.9157, lng: 70.9083 } },
@@ -53,7 +54,7 @@ async function seed() {
   await mongoose.connect(process.env.ATLASDB_URL);
   console.log("Connected to DB");
 
-  const user = await User.findOne({});
+  const user = await User.findOne({ username: "guest" }) || await User.findOne({});
   if (!user) {
     console.error("No users found — sign up at /signup first, then re-run.");
     process.exit(1);
@@ -62,12 +63,16 @@ async function seed() {
 
   // Clear existing data
   await Review.deleteMany({});
+  await Booking.deleteMany({});
   await Listing.deleteMany({});
 
-  // Insert listings with reviews
+  // Insert listings with reviews + pre-seeded bookings
+  const now = new Date();
+  const savedListings = [];
+
   for (const data of listings) {
     const listing = new Listing({ ...data, owner: user._id });
-    const reviewCount = 2 + Math.floor(Math.random() * 3); // 2–4 reviews
+    const reviewCount = 2 + Math.floor(Math.random() * 3);
     const picks = pickReviews(reviewCount);
     for (const r of picks) {
       const review = new Review({ ...r, author: user._id });
@@ -75,9 +80,42 @@ async function seed() {
       listing.reviews.push(review._id);
     }
     await listing.save();
+    savedListings.push(listing);
   }
 
-  console.log(`Seeded ${listings.length} listings with 2–4 reviews each`);
+  // Pre-seed bookings: 3-5 future busy periods per listing
+  const busyTemplates = [
+    { daysFromNow: 3,  len: 4 },
+    { daysFromNow: 10, len: 3 },
+    { daysFromNow: 18, len: 6 },
+    { daysFromNow: 28, len: 2 },
+    { daysFromNow: 35, len: 5 },
+    { daysFromNow: 45, len: 3 },
+    { daysFromNow: 55, len: 7 },
+    { daysFromNow: 68, len: 4 },
+  ];
+
+  for (const listing of savedListings) {
+    // Pick 3–5 busy periods per listing (offset slightly per listing to vary)
+    const offset = savedListings.indexOf(listing);
+    const picks  = busyTemplates.slice(offset % 3, (offset % 3) + 4 + (offset % 2));
+    for (const t of picks) {
+      const cin  = new Date(now); cin.setDate(cin.getDate() + t.daysFromNow + offset);
+      const cout = new Date(cin);  cout.setDate(cout.getDate() + t.len);
+      const nights = t.len;
+      await Booking.create({
+        listing: listing._id,
+        user: user._id,
+        checkIn: cin,
+        checkOut: cout,
+        guests: 1 + (offset % 3),
+        totalPrice: nights * listing.price,
+        status: 'confirmed',
+      });
+    }
+  }
+
+  console.log(`Seeded ${savedListings.length} listings with 2–4 reviews and pre-seeded bookings`);
   process.exit(0);
 }
 

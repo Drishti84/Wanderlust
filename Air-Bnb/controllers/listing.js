@@ -1,10 +1,16 @@
 const Listing = require("../models/listing.js");
+const Booking = require("../models/booking.js");
 
 module.exports.index = async (req ,res) => {
-    const { category } = req.query;
-    const filter = category ? { category } : {};
+    const { category, q } = req.query;
+    const filter = {};
+    if (category) filter.category = category;
+    if (q && q.trim()) {
+        const rx = new RegExp(q.trim(), "i");
+        filter.$or = [{ title: rx }, { location: rx }, { country: rx }];
+    }
     const allListings = await Listing.find(filter);
-    res.render("./listings/index.ejs", {allListings, activeCategory: category || null});
+    res.render("./listings/index.ejs", { allListings, activeCategory: category || null, searchQuery: q || "" });
 };
 
 module.exports.renderNewForm = (req,res) => {
@@ -24,7 +30,11 @@ module.exports.showListing = async (req,res) =>{
         req.flash("error", "listing does not exist!");
         return res.redirect("/listings");
     }
-    res.render("listings/show.ejs",{listing});
+    const bookedRanges = await Booking.find(
+      { listing: id, status: "confirmed", checkOut: { $gte: new Date() } },
+      "checkIn checkOut"
+    );
+    res.render("listings/show.ejs",{ listing, bookedRanges });
 };
 
 

@@ -16,9 +16,11 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
-const userRouter = require("./routes/user.js");
+const listings    = require("./routes/listing.js");
+const reviews     = require("./routes/review.js");
+const userRouter  = require("./routes/user.js");
+const bookings    = require("./routes/booking.js");
+const myBookings  = require("./routes/myBookings.js");
 
 
 const dbUrl = process.env.ATLASDB_URL;
@@ -83,6 +85,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
+  res.locals.searchQuery = req.query.q || "";
   next();
 });
 
@@ -90,6 +93,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => res.redirect("/listings"));
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
+app.use("/listings/:id/bookings", bookings);
+app.use("/bookings", myBookings);
 app.use("/", userRouter);
 
 

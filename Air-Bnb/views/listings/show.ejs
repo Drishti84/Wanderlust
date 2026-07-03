@@ -54,10 +54,68 @@
         <small>/ night</small>
       </div>
 
-      <div class="booking-coming-soon">
-        <i class="fa-regular fa-calendar me-2"></i>
-        Booking coming soon — check availability
-      </div>
+      <% if(currUser) { %>
+        <form id="bookingForm" action="/listings/<%= listing._id %>/bookings" method="POST">
+          <div class="booking-date-row">
+            <div class="booking-date-field">
+              <label class="booking-date-label">CHECK-IN</label>
+              <input type="date" name="checkIn" id="checkIn" class="booking-date-input" required>
+            </div>
+            <div class="booking-date-divider"></div>
+            <div class="booking-date-field">
+              <label class="booking-date-label">CHECK-OUT</label>
+              <input type="date" name="checkOut" id="checkOut" class="booking-date-input" required>
+            </div>
+          </div>
+
+          <div class="booking-guests-row">
+            <label class="booking-date-label">GUESTS</label>
+            <select name="guests" class="booking-guests-select">
+              <% for(let i = 1; i <= 8; i++) { %>
+                <option value="<%= i %>"><%= i %> guest<%= i > 1 ? 's' : '' %></option>
+              <% } %>
+            </select>
+          </div>
+
+          <div id="bookingConflict" class="booking-conflict" style="display:none;">
+            <i class="fa-solid fa-circle-exclamation me-1"></i>
+            <span id="conflictMsg">Those dates are not available.</span>
+          </div>
+
+          <div id="priceSummary" class="booking-price-summary" style="display:none;">
+            <div class="price-summary-row">
+              <span id="nightsLabel">0 nights</span>
+              <span id="nightsTotal">₹0</span>
+            </div>
+            <div class="price-summary-row price-summary-total">
+              <span>Total</span>
+              <span id="grandTotal">₹0</span>
+            </div>
+          </div>
+
+          <button type="submit" id="reserveBtn" class="btn-coral w-full" disabled>Select dates to reserve</button>
+        </form>
+
+        <% if(bookedRanges.length > 0) { %>
+        <div class="booked-dates-section">
+          <p class="booked-dates-heading"><i class="fa-solid fa-ban me-1"></i>Unavailable dates</p>
+          <% for(let r of bookedRanges) { %>
+            <div class="booked-date-range">
+              <%= new Date(r.checkIn).toLocaleDateString('en-IN', {day:'numeric', month:'short'}) %>
+              &ndash;
+              <%= new Date(r.checkOut).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+            </div>
+          <% } %>
+        </div>
+        <% } %>
+
+      <% } else { %>
+        <div class="booking-login-prompt">
+          <i class="fa-solid fa-lock mb-2" style="font-size:1.5rem;color:var(--text-secondary);display:block;text-align:center;"></i>
+          <p>Log in to reserve this listing</p>
+          <a href="/login" class="btn-coral w-full" style="text-align:center;">Log in to reserve</a>
+        </div>
+      <% } %>
 
       <div class="booking-divider"></div>
 
@@ -130,6 +188,73 @@
     <i class="fa-solid fa-diamond-turn-right me-1"></i> Get Directions
   </a>
 </div>
+
+<script>
+(function() {
+  var cin  = document.getElementById('checkIn');
+  var cout = document.getElementById('checkOut');
+  if (!cin) return;
+
+  var pricePerNight = <%= listing.price %>;
+  var bookedRanges  = <%- JSON.stringify(bookedRanges.map(r => ({ s: new Date(r.checkIn).toISOString().slice(0,10), e: new Date(r.checkOut).toISOString().slice(0,10) }))) %>;
+
+  var today = new Date().toISOString().slice(0, 10);
+  cin.min  = today;
+  cout.min = today;
+
+  function toDate(str) { var p = str.split('-'); return new Date(p[0], p[1]-1, p[2]); }
+
+  function hasConflict(cInStr, cOutStr) {
+    var a = toDate(cInStr), b = toDate(cOutStr);
+    return bookedRanges.some(function(r) {
+      return a < toDate(r.e) && b > toDate(r.s);
+    });
+  }
+
+  function fmt(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+  function updateUI() {
+    var cInVal = cin.value, cOutVal = cout.value;
+    var btn    = document.getElementById('reserveBtn');
+    var sumDiv = document.getElementById('priceSummary');
+    var conf   = document.getElementById('bookingConflict');
+
+    if (!cInVal || !cOutVal) {
+      btn.disabled = true; btn.textContent = 'Select dates to reserve';
+      sumDiv.style.display = 'none'; conf.style.display = 'none';
+      return;
+    }
+    if (toDate(cOutVal) <= toDate(cInVal)) {
+      btn.disabled = true; conf.style.display = 'flex';
+      document.getElementById('conflictMsg').textContent = 'Check-out must be after check-in.';
+      sumDiv.style.display = 'none'; return;
+    }
+    if (hasConflict(cInVal, cOutVal)) {
+      btn.disabled = true; conf.style.display = 'flex';
+      document.getElementById('conflictMsg').textContent = 'These dates overlap with an existing booking.';
+      sumDiv.style.display = 'none'; return;
+    }
+    conf.style.display = 'none';
+    var nights = Math.ceil((toDate(cOutVal) - toDate(cInVal)) / 86400000);
+    var total  = nights * pricePerNight;
+    document.getElementById('nightsLabel').textContent = nights + ' night' + (nights > 1 ? 's' : '') + ' × ' + fmt(pricePerNight);
+    document.getElementById('nightsTotal').textContent = fmt(total);
+    document.getElementById('grandTotal').textContent  = fmt(total);
+    sumDiv.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Reserve';
+  }
+
+  cin.addEventListener('change', function() {
+    if (cout.value && cout.value <= cin.value) cout.value = '';
+    var nextDay = new Date(toDate(cin.value));
+    nextDay.setDate(nextDay.getDate() + 1);
+    cout.min = nextDay.toISOString().slice(0, 10);
+    updateUI();
+  });
+  cout.addEventListener('change', updateUI);
+})();
+</script>
 
 <!-- Reviews Section (full width below grid) -->
 <div class="reviews-section">

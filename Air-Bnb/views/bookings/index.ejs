@@ -1,0 +1,50 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="bookings-page">
+  <h1 class="bookings-heading">My Bookings</h1>
+
+  <% if (!bookings.length) { %>
+    <div class="bookings-empty">
+      <i class="fa-regular fa-calendar-xmark"></i>
+      <p>No bookings yet.</p>
+      <a href="/listings" class="btn-coral">Explore listings</a>
+    </div>
+  <% } else { %>
+    <div class="bookings-list">
+      <% for (let b of bookings) { %>
+        <% if (!b.listing) continue; %>
+        <div class="booking-card-row <%= b.status === 'cancelled' ? 'cancelled' : '' %>">
+          <img src="<%= b.listing.image.url %>" class="booking-card-thumb" alt="<%= b.listing.title %>">
+          <div class="booking-card-info">
+            <a href="/listings/<%= b.listing._id %>" class="booking-listing-title"><%= b.listing.title %></a>
+            <div class="booking-meta">
+              <span><i class="fa-solid fa-location-dot me-1"></i><%= b.listing.location %>, <%= b.listing.country %></span>
+            </div>
+            <div class="booking-dates">
+              <span><i class="fa-regular fa-calendar me-1"></i>
+                <%= new Date(b.checkIn).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+                &rarr;
+                <%= new Date(b.checkOut).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) %>
+              </span>
+              <span class="booking-nights">
+                <% const nights = Math.ceil((new Date(b.checkOut) - new Date(b.checkIn)) / 86400000); %>
+                <%= nights %> night<%= nights > 1 ? 's' : '' %>
+              </span>
+            </div>
+            <div class="booking-price-row">
+              <span class="booking-total">₹<%= b.totalPrice.toLocaleString('en-IN') %></span>
+              <span class="booking-status-badge booking-status-<%= b.status %>"><%= b.status %></span>
+            </div>
+          </div>
+          <% if (b.status === 'confirmed' && new Date(b.checkIn) > new Date()) { %>
+          <div class="booking-card-actions">
+            <form method="POST" action="/bookings/<%= b._id %>?_method=DELETE" onsubmit="return confirm('Cancel this booking?')">
+              <button type="submit" class="btn-danger-ghost btn-sm">Cancel</button>
+            </form>
+          </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>
