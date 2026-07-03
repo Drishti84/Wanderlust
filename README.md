@@ -2,7 +2,6 @@
 
 A full-stack Airbnb-inspired vacation rental platform built with Node.js, Express, MongoDB, and EJS.
 
-![Wanderlust](https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80)
 
 ## Features
 
