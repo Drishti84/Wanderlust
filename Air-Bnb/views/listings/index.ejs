@@ -3,39 +3,42 @@
 <!-- Filter Bar (full-width, outside container) -->
 <div class="filter-bar">
   <div class="filter-bar-inner">
-    <button class="filter-pill" data-category="trending">
+    <a href="/listings" class="filter-pill <%= !activeCategory ? 'active' : '' %>">
+      <i class="fa-solid fa-border-all"></i><span>All</span>
+    </a>
+    <a href="/listings?category=trending" class="filter-pill <%= activeCategory === 'trending' ? 'active' : '' %>">
       <i class="fa-solid fa-fire"></i><span>Trending</span>
-    </button>
-    <button class="filter-pill" data-category="rooms">
+    </a>
+    <a href="/listings?category=rooms" class="filter-pill <%= activeCategory === 'rooms' ? 'active' : '' %>">
       <i class="fa-solid fa-bed"></i><span>Rooms</span>
-    </button>
-    <button class="filter-pill" data-category="cities">
+    </a>
+    <a href="/listings?category=cities" class="filter-pill <%= activeCategory === 'cities' ? 'active' : '' %>">
       <i class="fa-solid fa-mountain-city"></i><span>Iconic Cities</span>
-    </button>
-    <button class="filter-pill" data-category="mountains">
+    </a>
+    <a href="/listings?category=mountains" class="filter-pill <%= activeCategory === 'mountains' ? 'active' : '' %>">
       <i class="fa-solid fa-mountain"></i><span>Mountains</span>
-    </button>
-    <button class="filter-pill" data-category="castles">
+    </a>
+    <a href="/listings?category=castles" class="filter-pill <%= activeCategory === 'castles' ? 'active' : '' %>">
       <i class="fa-brands fa-fort-awesome"></i><span>Castles</span>
-    </button>
-    <button class="filter-pill" data-category="pools">
+    </a>
+    <a href="/listings?category=pools" class="filter-pill <%= activeCategory === 'pools' ? 'active' : '' %>">
       <i class="fa-solid fa-person-swimming"></i><span>Amazing Pools</span>
-    </button>
-    <button class="filter-pill" data-category="camping">
+    </a>
+    <a href="/listings?category=camping" class="filter-pill <%= activeCategory === 'camping' ? 'active' : '' %>">
       <i class="fa-solid fa-campground"></i><span>Camping</span>
-    </button>
-    <button class="filter-pill" data-category="farms">
+    </a>
+    <a href="/listings?category=farms" class="filter-pill <%= activeCategory === 'farms' ? 'active' : '' %>">
       <i class="fa-solid fa-tractor"></i><span>Farms</span>
-    </button>
-    <button class="filter-pill" data-category="arctic">
+    </a>
+    <a href="/listings?category=arctic" class="filter-pill <%= activeCategory === 'arctic' ? 'active' : '' %>">
       <i class="fa-solid fa-snowflake"></i><span>Arctic</span>
-    </button>
-    <button class="filter-pill" data-category="domes">
+    </a>
+    <a href="/listings?category=domes" class="filter-pill <%= activeCategory === 'domes' ? 'active' : '' %>">
       <i class="fa-solid fa-landmark-dome"></i><span>Domes</span>
-    </button>
-    <button class="filter-pill" data-category="boating">
+    </a>
+    <a href="/listings?category=boating" class="filter-pill <%= activeCategory === 'boating' ? 'active' : '' %>">
       <i class="fa-solid fa-sailboat"></i><span>Boating</span>
-    </button>
+    </a>
 
     <div class="tax-toggle-wrapper">
       <div class="form-check form-switch mb-0">
@@ -48,6 +51,13 @@
 
 <!-- Listings Grid -->
 <div class="listings-section">
+  <% if (allListings.length === 0) { %>
+    <div class="no-listings">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <p>No listings found in this category.</p>
+      <a href="/listings" class="btn-coral">Browse all listings</a>
+    </div>
+  <% } else { %>
   <div class="listings-grid">
     <% for(let listing of allListings) { %>
       <a href="/listings/<%= listing._id %>" class="listing-card">
@@ -75,4 +85,5 @@
       </a>
     <% } %>
   </div>
+  <% } %>
 </div>

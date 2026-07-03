@@ -353,6 +353,14 @@ img { display: block; max-width: 100%; }
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 24px;
 }
+.no-listings {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--text-secondary);
+}
+.no-listings i { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+.no-listings p { font-size: 1.125rem; margin-bottom: 20px; }
+.no-listings .btn-coral { display: inline-block; padding: 10px 24px; }
 .listing-card {
   display: block;
   text-decoration: none;
