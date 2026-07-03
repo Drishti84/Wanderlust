@@ -2,6 +2,7 @@
 
 A full-stack Airbnb-inspired vacation rental platform built with Node.js, Express, MongoDB, and EJS.
 
+**Live Demo:** [air-bnb-jtw3.onrender.com](https://air-bnb-jtw3.onrender.com/listings)
 
 ## Features
 
