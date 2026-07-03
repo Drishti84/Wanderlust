@@ -113,9 +113,4 @@ Air-Bnb/
 
 | Username | Password |
 |----------|----------|
-| `me` | `me1234` |
 | `guest` | `guest1234` |
-
-## License
-
-MIT
